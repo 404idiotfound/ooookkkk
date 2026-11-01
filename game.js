@@ -15,8 +15,8 @@ const flapButton = document.getElementById("flapButton");
 
 // Custom MP3 sound effects.
 // Add your own files at audio/flap.mp3 and audio/collision.mp3.
-const flapSound = new Audio("flap.mp3");
-const collisionSound = new Audio("collision.mp3");
+const flapSound = new Audio("audio/flap.mp3");
+const collisionSound = new Audio("audio/collision.mp3");
 
 flapSound.preload = "auto";
 collisionSound.preload = "auto";
@@ -53,7 +53,7 @@ const GROUND = 510;
 const SETTINGS = {
   gravity: 0.27,
   jumpStrength: -5.5,
-  pipeSpeed: 5.0,
+  pipeSpeed: 6.0,
   pipeWidth: 65,
   pipeGap: 150,
   pipeInterval: 125,
@@ -249,7 +249,7 @@ function gameOver() {
   state = "over";
   playCollisionSound();
 
-  overlayTitle.textContent = "Oh No! 😢";
+  overlayTitle.textContent = "Oh munjiii ! 😢";
   overlayText.textContent = "Your score: " + score;
   startButton.textContent = "↻ Play Again";
 
