@@ -156,7 +156,7 @@ function resizeGame() {
     SETTINGS.pipeWidth = 76;
     SETTINGS.pipeGap = 120;
     SETTINGS.pipeSpeed = 4.0;
-    SETTINGS.pipeInterval = 45;
+    SETTINGS.pipeInterval = 70;
 
     SETTINGS.gravity = 0.52;
     SETTINGS.jumpStrength = -9.2;
@@ -168,7 +168,7 @@ function resizeGame() {
     SETTINGS.pipeWidth = 65;
     SETTINGS.pipeGap = 120;
     SETTINGS.pipeSpeed = 4.0;
-    SETTINGS.pipeInterval = 20;
+    SETTINGS.pipeInterval = 70;
 
     SETTINGS.gravity = 0.52;
     SETTINGS.jumpStrength = -5.5;
