@@ -116,7 +116,7 @@ function resizeGame() {
     GROUND = 842;
     SETTINGS.pipeWidth = 76;
     SETTINGS.pipeGap = 235;
-    SETTINGS.pipeSpeed = 4.0;
+    SETTINGS.pipeSpeed = 7.0;
     SETTINGS.gravity = 0.34;
     SETTINGS.jumpStrength = -7.1;
   } else {
