@@ -15,8 +15,8 @@ const flapButton = document.getElementById("flapButton");
 
 // Custom MP3 sound effects.
 // Add your own files at audio/flap.mp3 and audio/collision.mp3.
-const flapSound = new Audio("flap.mp3");
-const collisionSound = new Audio("Moan anime.mp3.mpeg");
+const flapSound = new Audio("audio/flap.mp3");
+const collisionSound = new Audio("audio/collision.mp3");
 
 flapSound.preload = "auto";
 collisionSound.preload = "auto";
@@ -41,19 +41,114 @@ function playJumpSound() {
   playSound(flapSound);
 }
 
-function playCollisionSound() {
-  playSound(collisionSound);
+// Built-in collision sound fallback (works even when collision.mp3 is absent).
+let gameAudioContext = null;
+
+function unlockGameAudio() {
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+
+  if (!gameAudioContext) {
+    gameAudioContext = new AudioContextClass();
+  }
+
+  if (gameAudioContext.state === "suspended") {
+    gameAudioContext.resume().catch(() => {});
+  }
 }
 
-const WIDTH = 960;
-const HEIGHT = 540;
-const GROUND = 510;
+function playBuiltInCollisionSound() {
+  try {
+    unlockGameAudio();
+    if (!gameAudioContext) return;
+
+    const now = gameAudioContext.currentTime;
+    const oscillator = gameAudioContext.createOscillator();
+    const gain = gameAudioContext.createGain();
+
+    oscillator.type = "sawtooth";
+    oscillator.frequency.setValueAtTime(260, now);
+    oscillator.frequency.exponentialRampToValueAtTime(75, now + 0.32);
+
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.22, now + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.36);
+
+    oscillator.connect(gain);
+    gain.connect(gameAudioContext.destination);
+    oscillator.start(now);
+    oscillator.stop(now + 0.38);
+  } catch (error) {
+    console.warn("Built-in collision sound could not play:", error);
+  }
+}
+
+function playCollisionSound() {
+  // The current ZIP may not include collision.mp3. Use the built-in sound
+  // when the file is missing or the browser reports a playback failure.
+  if (collisionSound.error || collisionSound.networkState === HTMLMediaElement.NETWORK_NO_SOURCE) {
+    playBuiltInCollisionSound();
+    return;
+  }
+
+  try {
+    collisionSound.currentTime = 0;
+    const playback = collisionSound.play();
+    if (playback && typeof playback.catch === "function") {
+      playback.catch(() => playBuiltInCollisionSound());
+    }
+  } catch (error) {
+    playBuiltInCollisionSound();
+  }
+}
+
+let WIDTH = 960;
+let HEIGHT = 540;
+let GROUND = 510;
+let isMobilePortrait = false;
+
+function resizeGame() {
+  isMobilePortrait = window.matchMedia("(max-width: 768px) and (orientation: portrait)").matches;
+
+  if (isMobilePortrait) {
+    WIDTH = 540;
+    HEIGHT = 900;
+    GROUND = 842;
+    SETTINGS.pipeWidth = 76;
+    SETTINGS.pipeGap = 235;
+    SETTINGS.pipeSpeed = 4.0;
+    SETTINGS.gravity = 0.34;
+    SETTINGS.jumpStrength = -7.1;
+  } else {
+    WIDTH = 960;
+    HEIGHT = 540;
+    GROUND = 510;
+    SETTINGS.pipeWidth = 65;
+    SETTINGS.pipeGap = 150;
+    SETTINGS.pipeSpeed = 3.0;
+    SETTINGS.gravity = 0.27;
+    SETTINGS.jumpStrength = -5.5;
+  }
+
+  canvas.width = WIDTH;
+  canvas.height = HEIGHT;
+
+  bird.x = isMobilePortrait ? 135 : 185;
+  if (state !== "playing") {
+    bird.y = HEIGHT * 0.46;
+  }
+}
+
+window.addEventListener("resize", resizeGame);
+window.addEventListener("orientationchange", () => {
+  window.setTimeout(resizeGame, 120);
+});
 
 // CUSTOMIZE GAME SETTINGS HERE
 const SETTINGS = {
   gravity: 0.27,
   jumpStrength: -5.5,
-  pipeSpeed: 6.0,
+  pipeSpeed: 3.0,
   pipeWidth: 65,
   pipeGap: 150,
   pipeInterval: 125,
@@ -156,12 +251,13 @@ function drawBird() {
   ctx.rotate(bird.rotation);
 
   if (birdImage.complete && birdImage.naturalWidth > 0) {
-    ctx.drawImage(birdImage, -26, -26, 52, 52);
+    const birdSize = isMobilePortrait ? 66 : 52;
+    ctx.drawImage(birdImage, -birdSize / 2, -birdSize / 2, birdSize, birdSize);
   } else {
     // Fallback while the custom image is loading.
     ctx.fillStyle = SETTINGS.birdColor;
     ctx.beginPath();
-    ctx.arc(0, 0, 20, 0, Math.PI * 2);
+    ctx.arc(0, 0, isMobilePortrait ? 25 : 20, 0, Math.PI * 2);
     ctx.fill();
   }
 
@@ -205,6 +301,8 @@ function roundedRect(x, y, w, h, radius, color) {
 
 // Start game
 function startGame() {
+  unlockGameAudio();
+
   // Stop and rewind the previous collision sound when Play Again is clicked.
   // This also keeps the sound silent when starting a fresh game.
   collisionSound.pause();
@@ -216,8 +314,8 @@ function startGame() {
   pipes = [];
 
   bird = {
-    x: 185,
-    y: 250,
+    x: isMobilePortrait ? 135 : 185,
+    y: HEIGHT * 0.46,
     velocity: SETTINGS.jumpStrength,
     rotation: 0
   };
@@ -228,6 +326,8 @@ function startGame() {
 
 // Bird jump
 function flap() {
+  unlockGameAudio();
+
   if (state === "ready") {
     startGame();
   }
@@ -249,7 +349,7 @@ function gameOver() {
   state = "over";
   playCollisionSound();
 
-  overlayTitle.textContent = "Oh munjiii ! 😢";
+  overlayTitle.textContent = "Oh No! 😢";
   overlayText.textContent = "Your score: " + score;
   startButton.textContent = "↻ Play Again";
 
@@ -260,7 +360,9 @@ function gameOver() {
 function createPipe() {
   pipes.push({
     x: WIDTH + 20,
-    gapY: Math.random() * 130 + 185,
+    gapY: isMobilePortrait
+      ? Math.random() * 250 + 325
+      : Math.random() * 130 + 185,
     phase: Math.random() * 7,
     passed: false
   });
@@ -272,19 +374,20 @@ function checkCollision(pipe) {
   const by = bird.y;
 
   // Ground and ceiling
-  if (by - 13 < 0 || by + 13 > GROUND) {
+  const hitRadius = isMobilePortrait ? 19 : 13;
+  if (by - hitRadius < 0 || by + hitRadius > GROUND) {
     return true;
   }
 
   // Obstacle
   if (
-    bx + 15 > pipe.x &&
-    bx - 15 < pipe.x + SETTINGS.pipeWidth
+    bx + (isMobilePortrait ? 20 : 15) > pipe.x &&
+    bx - (isMobilePortrait ? 20 : 15) < pipe.x + SETTINGS.pipeWidth
   ) {
     const gapTop = pipe.gapY - SETTINGS.pipeGap / 2;
     const gapBottom = pipe.gapY + SETTINGS.pipeGap / 2;
 
-    if (by - 13 < gapTop || by + 13 > gapBottom) {
+    if (by - hitRadius < gapTop || by + hitRadius > gapBottom) {
       return true;
     }
   }
@@ -362,7 +465,7 @@ function gameLoop() {
   }
 
   if (state === "ready") {
-    bird.y = 250 + Math.sin(Date.now() * 0.003) * 8;
+    bird.y = HEIGHT * 0.46 + Math.sin(Date.now() * 0.003) * 10;
     bird.rotation = 0;
   }
 
@@ -386,6 +489,9 @@ window.addEventListener("keydown", event => {
     flap();
   }
 });
+
+// Set the correct playfield dimensions before the first frame.
+resizeGame();
 
 // Start rendering
 requestAnimationFrame(gameLoop);
