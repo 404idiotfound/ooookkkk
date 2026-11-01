@@ -12,7 +12,7 @@ const overlayText = document.getElementById("overlayText");
 const startButton = document.getElementById("startButton");
 const flapButton = document.getElementById("flapButton");
 
-// Audio files - filenames unchanged
+// Audio files
 const flapSound = new Audio("flap.mp3");
 const collisionSound = new Audio("Moan anime.mp3.mpeg");
 
@@ -43,9 +43,7 @@ function playJumpSound() {
 let gameAudioContext = null;
 
 function unlockGameAudio() {
-  const AudioContextClass =
-    window.AudioContext || window.webkitAudioContext;
-
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
   if (!AudioContextClass) return;
 
   if (!gameAudioContext) {
@@ -105,7 +103,6 @@ function playCollisionSound() {
   }
 }
 
-// Canvas dimensions
 let WIDTH = 960;
 let HEIGHT = 540;
 let GROUND = 510;
@@ -159,11 +156,10 @@ function resizeGame() {
     SETTINGS.pipeWidth = 76;
     SETTINGS.pipeGap = 120;
     SETTINGS.pipeSpeed = 4.0;
-    SETTINGS.pipeInterval = 19;
+    SETTINGS.pipeInterval = 45;
 
     SETTINGS.gravity = 0.52;
     SETTINGS.jumpStrength = -9.2;
-
   } else {
     WIDTH = 960;
     HEIGHT = 540;
@@ -229,7 +225,6 @@ function drawBackground() {
       sx, sy, sw, sh,
       0, 0, WIDTH, HEIGHT
     );
-
   } else {
     const fallback = ctx.createLinearGradient(0, 0, 0, HEIGHT);
     fallback.addColorStop(0, "#75d6f4");
@@ -287,7 +282,6 @@ function drawBird() {
       birdSize,
       birdSize
     );
-
   } else {
     ctx.fillStyle = SETTINGS.birdColor;
     ctx.beginPath();
@@ -309,7 +303,6 @@ function drawPipe(pipe) {
   const bottomHeight = Math.max(0, GROUND - bottomStart + 12);
 
   if (capsuleImage.complete && capsuleImage.naturalWidth > 0) {
-
     ctx.save();
     ctx.translate(pipe.x + w / 2, topHeight / 2);
     ctx.scale(1, -1);
@@ -331,7 +324,6 @@ function drawPipe(pipe) {
       w,
       bottomHeight
     );
-
   } else {
     roundedRect(pipe.x, 0, w, topEnd + 12, w / 2, "#d91f3c");
 
@@ -393,7 +385,7 @@ function flap() {
   bird.velocity = SETTINGS.jumpStrength;
   playJumpSound();
 
-  // 100 points per jump
+  // Add 100 points for every jump
   score += 100;
   scoreElement.textContent = score;
 
@@ -499,7 +491,6 @@ function update() {
   frame++;
 
   bird.velocity += SETTINGS.gravity;
-
   bird.y += bird.velocity;
 
   bird.rotation = Math.min(
@@ -507,7 +498,7 @@ function update() {
     Math.max(-0.5, bird.velocity * 0.09)
   );
 
-  // ONLY CHANGE: mobile pair interval is 19 frames.
+  // Capsule pair timing
   if (frame % SETTINGS.pipeInterval === 0) {
     createPipe();
   }
@@ -576,7 +567,7 @@ window.addEventListener("keydown", event => {
   }
 });
 
-// Set correct dimensions
+// Set correct playfield dimensions
 resizeGame();
 
 // Start rendering
