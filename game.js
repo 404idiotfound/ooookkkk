@@ -154,7 +154,7 @@ function resizeGame() {
     GROUND = 842;
 
     SETTINGS.pipeWidth = 76;
-    SETTINGS.pipeGap = 120;
+    SETTINGS.pipeGap = 160;
     SETTINGS.pipeSpeed = 4.0;
     SETTINGS.pipeInterval = 70;
 
@@ -166,12 +166,12 @@ function resizeGame() {
     GROUND = 510;
 
     SETTINGS.pipeWidth = 65;
-    SETTINGS.pipeGap = 120;
+    SETTINGS.pipeGap = 160;
     SETTINGS.pipeSpeed = 4.0;
     SETTINGS.pipeInterval = 70;
 
     SETTINGS.gravity = 0.52;
-    SETTINGS.jumpStrength = -5.5;
+    SETTINGS.jumpStrength = -7.5;
   }
 
   canvas.width = WIDTH;
