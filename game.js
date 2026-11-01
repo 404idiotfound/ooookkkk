@@ -114,7 +114,7 @@ const SETTINGS = {
   jumpStrength: -5.5,
   pipeSpeed: 3.0,
   pipeWidth: 65,
-  pipeGap: 150,
+  pipeGap: 220,
   pipeInterval: 20,
   birdColor: "#f7ca53",
   obstacleColor: "#55bd67",
@@ -154,7 +154,7 @@ function resizeGame() {
     GROUND = 842;
 
     SETTINGS.pipeWidth = 76;
-    SETTINGS.pipeGap = 160;
+    SETTINGS.pipeGap = 220;
     SETTINGS.pipeSpeed = 4.0;
     SETTINGS.pipeInterval = 70;
 
