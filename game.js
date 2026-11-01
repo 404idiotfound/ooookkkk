@@ -117,16 +117,16 @@ function resizeGame() {
     SETTINGS.pipeWidth = 76;
     SETTINGS.pipeGap = 235;
     SETTINGS.pipeSpeed = 7.0;
-    SETTINGS.gravity = 0.34;
-    SETTINGS.jumpStrength = -7.1;
+    SETTINGS.gravity = 0.52;
+    SETTINGS.jumpStrength = -9.2;
   } else {
     WIDTH = 960;
     HEIGHT = 540;
     GROUND = 510;
     SETTINGS.pipeWidth = 65;
     SETTINGS.pipeGap = 150;
-    SETTINGS.pipeSpeed = 3.0;
-    SETTINGS.gravity = 0.27;
+    SETTINGS.pipeSpeed = 7.0;
+    SETTINGS.gravity = 0.52;
     SETTINGS.jumpStrength = -5.5;
   }
 
@@ -338,6 +338,17 @@ function flap() {
 
   bird.velocity = SETTINGS.jumpStrength;
   playJumpSound();
+score+=100;
+  scoreElement.textContent = score;
+  
+  if(score>best){
+    best=score;
+    bestElement.textContent = best;
+    localStorage.setItem("flappyFriendsBest",best);
+    
+  }
+  
+  
 }
 
 // Game over
