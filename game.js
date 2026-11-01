@@ -53,7 +53,7 @@ const GROUND = 510;
 const SETTINGS = {
   gravity: 0.27,
   jumpStrength: -5.5,
-  pipeSpeed: 3.0,
+  pipeSpeed: 5.0,
   pipeWidth: 65,
   pipeGap: 150,
   pipeInterval: 125,
