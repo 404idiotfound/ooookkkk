@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#75d6f4">
+  <title>Custom Bird Flappy Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>🐤 Custom Bird Flappy</h1>
+      <p>Fly through the capsules!</p>
+    </header>
+
+    <section class="scoreboard">
+      <div class="score-card">
+        <span>SCORE</span>
+        <strong id="score">0</strong>
+      </div>
+      <div class="score-card">
+        <span>BEST SCORE</span>
+        <strong id="best">0</strong>
+      </div>
+    </section>
+
+    <section class="game-wrapper">
+      <canvas id="gameCanvas"
+        width="960" height="540"
+        aria-label="Custom Bird Flappy game">
+      </canvas>
+
+      <div class="overlay" id="overlay">
+        <h2 id="overlayTitle">Custom Bird Flappy!</h2>
+        <p id="overlayText">Ready for an adventure?</p>
+        <button id="startButton">▶ Start Game</button>
+      </div>
+    </section>
+
+    <button id="flapButton" class="flap-button">
+      🐦 FLAP!
+    </button>
+
+    <p class="instructions">
+      Tap the screen or press SPACE / ↑ to fly.
+      Avoid the moving obstacles!
+    </p>
+
+    <footer>
+      Made with 💛 | Custom Bird Flappy
+    </footer>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>

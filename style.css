@@ -1,0 +1,363 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  height: 100vh;
+  height: 100dvh;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  background:
+    linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.06)),
+    url("building-background.jpg") center 48% / cover no-repeat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+}
+
+.container {
+  position: relative;
+  isolation: isolate;
+  width: min(96vw, 1500px, 145.8vh);
+  height: 100%;
+  max-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(5px, 1.1vh, 11px);
+  text-align: center;
+  padding: clamp(6px, 1.2vh, 12px);
+  border: 1px solid rgba(255,255,255,.76);
+  border-radius: 22px;
+  background: rgba(255,255,255,.14);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  box-shadow: 0 10px 32px rgba(20,20,40,.18);
+}
+
+.container::before, .container::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  top: -4px;
+  width: clamp(90px, 15vw, 210px);
+  height: clamp(80px, 14vh, 170px);
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+}
+.container::before { left: -5px; background-image: url("leaves-left.png"); background-position: top left; }
+.container::after { right: -5px; background-image: url("leaves-right.png"); background-position: top right; }
+
+.header { flex: 0 0 auto; position: relative; z-index: 1; }
+.header h1 {
+  color: #fff;
+  font-size: clamp(19px, 3.2vh, 34px);
+  line-height: 1.05;
+  font-weight: 900;
+  text-shadow: 0 2px 8px rgba(0,0,0,.55);
+}
+.header p {
+  color: #fff;
+  margin-top: 3px;
+  font-size: clamp(11px, 1.8vh, 17px);
+  text-shadow: 0 1px 5px rgba(0,0,0,.6);
+}
+
+.scoreboard {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 10px;
+  margin: 0 auto;
+  width: min(100%, 680px);
+  position: relative;
+  z-index: 1;
+}
+.score-card {
+  flex: 1;
+  padding: clamp(4px, .8vh, 9px) 10px;
+  background: rgba(255,244,250,.88);
+  border: 2px solid rgba(255,255,255,.98);
+  border-radius: 14px;
+  box-shadow: 0 4px 12px rgba(70,8,35,.18);
+}
+.score-card span { display: block; font-size: clamp(9px, 1.4vh, 12px); color: #78213e; font-weight: bold; }
+.score-card strong { display: block; font-size: clamp(19px, 2.8vh, 30px); line-height: 1.05; color: #64132f; }
+
+.game-wrapper {
+  position: relative;
+  flex: 0 1 auto;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 20px;
+  border: 3px solid rgba(255,255,255,.98);
+  box-shadow: 0 7px 22px rgba(20,10,30,.22);
+  background: rgba(255,255,255,.08);
+  z-index: 1;
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(8px, 2vw, 20px);
+  background: rgba(255,255,255,.38);
+  backdrop-filter: blur(1.5px);
+  -webkit-backdrop-filter: blur(1.5px);
+}
+.overlay.hidden { display: none; }
+.overlay h2 {
+  color: #751a3b;
+  font-size: clamp(19px, 3.4vh, 36px);
+  margin-bottom: clamp(3px, .8vh, 10px);
+  text-shadow: 0 1px 2px rgba(255,255,255,.65);
+}
+.overlay p {
+  color: #67223a;
+  margin-bottom: clamp(7px, 1.6vh, 18px);
+  font-size: clamp(11px, 1.8vh, 18px);
+}
+button {
+  border: none;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: clamp(12px, 1.8vh, 17px);
+  transition: transform .1s;
+  -webkit-tap-highlight-color: transparent;
+}
+button:active { transform: scale(.95); }
+#startButton, .flap-button {
+  padding: clamp(8px, 1.4vh, 14px) clamp(16px, 2.8vw, 30px);
+  background: linear-gradient(135deg, #ed3869, #a80f43);
+  color: white;
+  border: 2px solid white;
+  border-radius: 13px;
+  box-shadow: 0 3px 0 #74102f;
+}
+
+/* Canvas taps and keyboard already control the bird; hide the extra page controls. */
+#flapButton, .instructions, footer { display: none !important; }
+
+@media (max-height: 520px) {
+  .container { gap: 4px; padding: 4px; }
+  .header p { display: none; }
+  .score-card { padding: 3px 8px; }
+  .container::before, .container::after { width: 75px; height: 70px; }
+}
+@media (max-width: 600px) {
+  body { padding: 4px; }
+  .container { width: 100%; border-radius: 14px; }
+  .game-wrapper { border-radius: 13px; }
+  .scoreboard { gap: 6px; }
+}
+
+
+/* Responsive layout refinements for phones and tablets */
+html {
+  min-height: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding:
+    max(4px, env(safe-area-inset-top))
+    max(4px, env(safe-area-inset-right))
+    max(4px, env(safe-area-inset-bottom))
+    max(4px, env(safe-area-inset-left));
+}
+
+.container {
+  width: min(96vw, 1500px, 145.8vh);
+  width: min(96vw, 1500px, 145.8dvh);
+  min-width: 0;
+}
+
+.game-wrapper {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+  aspect-ratio: 16 / 9;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+button {
+  min-height: 42px;
+  touch-action: manipulation;
+}
+
+@media (max-width: 768px) {
+  body {
+    padding: max(5px, env(safe-area-inset-top))
+             max(5px, env(safe-area-inset-right))
+             max(5px, env(safe-area-inset-bottom))
+             max(5px, env(safe-area-inset-left));
+  }
+
+  .container {
+    width: 100%;
+    height: 100%;
+    max-height: 100dvh;
+    padding: clamp(5px, 1.4vw, 10px);
+    gap: clamp(5px, 1.2vh, 10px);
+    border-radius: 15px;
+  }
+
+  .header h1 {
+    font-size: clamp(20px, 5vw, 30px);
+  }
+
+  .header p {
+    font-size: clamp(11px, 2.8vw, 15px);
+  }
+
+  .scoreboard {
+    width: min(100%, 520px);
+    gap: clamp(6px, 2vw, 10px);
+  }
+
+  .score-card {
+    padding: clamp(5px, 1.4vw, 9px) 8px;
+    border-radius: 12px;
+  }
+
+  .score-card span {
+    font-size: clamp(10px, 2.5vw, 12px);
+  }
+
+  .score-card strong {
+    font-size: clamp(20px, 5vw, 28px);
+  }
+
+  .game-wrapper {
+    width: 100%;
+    border-width: 2px;
+    border-radius: 14px;
+  }
+
+  .container::before,
+  .container::after {
+    width: clamp(62px, 17vw, 115px);
+    height: clamp(58px, 15vh, 105px);
+  }
+
+  #startButton {
+    min-height: 44px;
+    padding: 10px 22px;
+    font-size: clamp(13px, 3.5vw, 17px);
+  }
+
+  .overlay h2 {
+    font-size: clamp(19px, 5vw, 30px);
+  }
+
+  .overlay p {
+    font-size: clamp(11px, 3vw, 16px);
+  }
+}
+
+/* Very narrow phones */
+@media (max-width: 380px) {
+  .container {
+    gap: 5px;
+    padding: 5px;
+  }
+
+  .header h1 {
+    font-size: 19px;
+  }
+
+  .score-card strong {
+    font-size: 19px;
+  }
+
+  .game-wrapper {
+    border-radius: 11px;
+  }
+
+  .container::before,
+  .container::after {
+    width: 58px;
+    height: 55px;
+  }
+}
+
+/* Phone landscape: give the game as much vertical room as possible */
+@media (max-height: 500px) and (orientation: landscape) {
+  body {
+    padding: 3px;
+  }
+
+  .container {
+    width: min(98vw, 145.8dvh);
+    gap: 3px;
+    padding: 4px;
+  }
+
+  .header h1 {
+    font-size: clamp(15px, 4.2vh, 22px);
+  }
+
+  .header p {
+    display: none;
+  }
+
+  .score-card {
+    padding: 2px 7px;
+  }
+
+  .score-card span {
+    font-size: 9px;
+  }
+
+  .score-card strong {
+    font-size: clamp(16px, 4.5vh, 22px);
+  }
+
+  .game-wrapper {
+    max-height: 72dvh;
+    width: min(98vw, 128dvh);
+    max-width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    align-self: center;
+  }
+
+  .container::before,
+  .container::after {
+    width: 60px;
+    height: 52px;
+  }
+}
+
+/* Respect users who prefer less motion */
+@media (prefers-reduced-motion: reduce) {
+  button {
+    transition: none;
+  }
+}
