@@ -15,8 +15,8 @@ const flapButton = document.getElementById("flapButton");
 
 // Custom MP3 sound effects.
 // Add your own files at audio/flap.mp3 and audio/collision.mp3.
-const flapSound = new Audio("audio/flap.mp3");
-const collisionSound = new Audio("audio/collision.mp3");
+const flapSound = new Audio("flap.mp3");
+const collisionSound = new Audio("collision.mp3");
 
 flapSound.preload = "auto";
 collisionSound.preload = "auto";
