@@ -115,7 +115,7 @@ function resizeGame() {
     HEIGHT = 900;
     GROUND = 842;
     SETTINGS.pipeWidth = 76;
-    SETTINGS.pipeGap = 235;
+    SETTINGS.pipeGap = 120;
     SETTINGS.pipeSpeed = 7.0;
     SETTINGS.gravity = 0.52;
     SETTINGS.jumpStrength = -9.2;
@@ -124,7 +124,7 @@ function resizeGame() {
     HEIGHT = 540;
     GROUND = 510;
     SETTINGS.pipeWidth = 65;
-    SETTINGS.pipeGap = 150;
+    SETTINGS.pipeGap = 120;
     SETTINGS.pipeSpeed = 7.0;
     SETTINGS.gravity = 0.52;
     SETTINGS.jumpStrength = -5.5;
@@ -151,7 +151,7 @@ const SETTINGS = {
   pipeSpeed: 3.0,
   pipeWidth: 65,
   pipeGap: 150,
-  pipeInterval: 125,
+  pipeInterval: 55,
   birdColor: "#f7ca53",
   obstacleColor: "#55bd67",
   movingObstacles: true
