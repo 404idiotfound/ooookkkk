@@ -14,7 +14,7 @@ const flapButton = document.getElementById("flapButton");
 
 // Audio files
 const flapSound = new Audio("flap.mp3");
-const collisionSound = new Audio("collision.mp3");
+const collisionSound = new Audio("aura.mpeg");
 
 flapSound.preload = "auto";
 collisionSound.preload = "auto";
