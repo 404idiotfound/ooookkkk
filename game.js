@@ -409,7 +409,7 @@ function gameOver() {
   playCollisionSound();
 
   overlayTitle.textContent = "Oh Pluckii! 😢";
-  overlayText.textContent = "Hrishiraj's Aura: - " + score;
+  overlayText.textContent = "Hrishiraj's Aura: " + score;
   startButton.textContent = "↻ Give him Mental Support";
 
   overlay.classList.remove("hidden");
