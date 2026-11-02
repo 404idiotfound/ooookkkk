@@ -386,17 +386,17 @@ function flap() {
   playJumpSound();
 
   // Add 100 points for every jump
-  score += 100;
+  score -= 100;
   scoreElement.textContent = score;
 
-  if (score > best) {
+  if (score < best) {
     best = score;
     bestElement.textContent = best;
 
     try {
       localStorage.setItem("flappyFriendsBest", best);
     } catch (error) {
-      console.log("Could not save high score.");
+      console.log("Could Not Save Lowest Aura.");
     }
   }
 }
@@ -470,7 +470,7 @@ function updateScore(pipe) {
   ) {
     pipe.passed = true;
 
-    score++;
+    score--;
     scoreElement.textContent = score;
 
     if (score > best) {
