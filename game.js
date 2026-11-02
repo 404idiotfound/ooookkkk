@@ -408,9 +408,9 @@ function gameOver() {
   state = "over";
   playCollisionSound();
 
-  overlayTitle.textContent = "Oh No! 😢";
-  overlayText.textContent = "Your score: " + score;
-  startButton.textContent = "↻ Play Again";
+  overlayTitle.textContent = "Oh Pluckii! 😢";
+  overlayText.textContent = "Hrishiraj's Aura: - " + score;
+  startButton.textContent = "↻ Give him Mental Support";
 
   overlay.classList.remove("hidden");
 }
