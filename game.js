@@ -14,7 +14,7 @@ const flapButton = document.getElementById("flapButton");
 
 // Audio files
 const flapSound = new Audio("flap.mp3");
-const collisionSound = new Audio("Moan anime.mp3.mpeg");
+const collisionSound = new Audio("collision.mp3");
 
 flapSound.preload = "auto";
 collisionSound.preload = "auto";
